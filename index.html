@@ -291,6 +291,48 @@
       color: #bbb;
     }
 
+    /* ─── 小篆 Price Display ─── */
+    #seal-display {
+      margin-top: 18px;
+      background: #FFFBF0;
+      border: 2px dashed var(--yellow);
+      border-radius: 14px;
+      padding: 16px 20px;
+      text-align: center;
+    }
+    .seal-title {
+      font-size: .8rem;
+      font-weight: 700;
+      color: #888;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+    }
+    .seal-row {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .seal-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .seal-num {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: #333;
+      line-height: 1;
+    }
+    .seal-img {
+      height: 72px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
     /* ─── Responsive ─── */
     @media (max-width: 480px) {
       .question-row { flex-direction: column; }
@@ -302,9 +344,9 @@
 
 <header>
   <div class="title-wrap">
-    <h1>圖圖小幫手 🎨</h1>
-    <p class="subtitle">上傳圖片，我來告訴你裡面有咩！</p>
-    <div class="sticker-row">🌈 ⭐ 🐼 ✏️</div>
+    <h1>價錢牌小幫手 🏷️</h1>
+    <p class="subtitle">上傳價錢牌，我幫你讀出價格！</p>
+    <div class="sticker-row">💰 🏷️ ✨ 🖊️</div>
   </div>
 </header>
 
@@ -313,11 +355,11 @@
 
   <!-- Upload card -->
   <div class="card">
-    <span class="card-label">📸 上傳圖片</span>
+    <span class="card-label">📸 上傳價錢牌</span>
     <div class="upload-zone" id="drop-zone">
       <input type="file" id="file-input" accept="image/*" />
-      <div class="upload-icon">🖼️</div>
-      <p>將圖片拖拉到這裡<br/>或者 <strong>點一點</strong> 揀圖片</p>
+      <div class="upload-icon">🏷️</div>
+      <p>將價錢牌圖片拖拉到這裡<br/>或者 <strong>點一點</strong> 揀圖片</p>
     </div>
     <div id="preview-wrap">
       <img id="preview-img" src="" alt="preview" />
@@ -325,7 +367,7 @@
     </div>
 
     <div class="question-row">
-      <textarea id="question" rows="2" placeholder="問小幫手一個問題（例如：呢張圖係咩嚟？）">呢張圖係咩嚟？請用廣東話解釋。</textarea>
+      <textarea id="question" rows="2" placeholder="問小幫手關於價錢牌嘅問題…">請從這張價錢牌圖片提取價格，只需以「$XX.XX」或「$XX」格式回覆價格數字，再用一句廣東話簡單描述。</textarea>
       <button class="btn-ask" id="ask-btn">🔍 問！</button>
     </div>
   </div>
@@ -337,6 +379,22 @@
   <div class="card" id="response-card">
     <span class="card-label blue">🤖 小幫手話…</span>
     <div class="response-bubble" id="response-text"></div>
+
+    <!-- 小篆 price display -->
+    <div id="seal-display" style="display:none;">
+      <div class="seal-title">💎 以小篆顯示價格</div>
+      <div class="seal-row">
+        <div class="seal-unit" id="seal-dollar-wrap">
+          <span class="seal-num" id="seal-dollar-num"></span>
+          <img src="/images/dollar.png" class="seal-img" alt="圓" />
+        </div>
+        <div class="seal-unit" id="seal-cent-wrap" style="display:none;">
+          <span class="seal-num" id="seal-cent-num"></span>
+          <img src="/images/cent.png" class="seal-img" alt="仙" />
+        </div>
+      </div>
+    </div>
+
     <div class="tts-row">
       <button class="btn-tts" id="tts-btn">🔊 讀出答案</button>
       <span id="tts-status"></span>
@@ -380,6 +438,7 @@
     previewImg.src = '';
     fileInput.value = '';
     responseCard.style.display = 'none';
+    document.getElementById('seal-display').style.display = 'none';
     setStatus('');
   });
 
@@ -431,6 +490,7 @@
       responseCard.style.display = 'block';
       ttsStatus.textContent = '';
       audioPlayer.style.display = 'none';
+      showSealPrice(answer);
       setStatus('🎉 搞掂！按「讀出答案」聽語音。');
 
     } catch (err) {
@@ -439,6 +499,34 @@
       askBtn.disabled = false;
       askBtn.innerHTML = '🔍 問！';
     }
+  }
+
+  /* ─── Seal price display ─── */
+  function parsePrice(text) {
+    const match = text.match(/(?:HK\$|\$|港幣|HKD\s*)?(\d+)(?:[.．](\d+))?/);
+    if (!match) return null;
+    return { dollars: match[1], cents: match[2] || null };
+  }
+
+  function showSealPrice(text) {
+    const sealDisplay  = document.getElementById('seal-display');
+    const dollarNum    = document.getElementById('seal-dollar-num');
+    const centWrap     = document.getElementById('seal-cent-wrap');
+    const centNum      = document.getElementById('seal-cent-num');
+
+    const price = parsePrice(text);
+    if (!price) { sealDisplay.style.display = 'none'; return; }
+
+    dollarNum.textContent = price.dollars;
+
+    if (price.cents) {
+      centNum.textContent = price.cents;
+      centWrap.style.display = 'flex';
+    } else {
+      centWrap.style.display = 'none';
+    }
+
+    sealDisplay.style.display = 'block';
   }
 
   /* ─── TTS ─── */
