@@ -431,9 +431,7 @@
       responseCard.style.display = 'block';
       ttsStatus.textContent = '';
       audioPlayer.style.display = 'none';
-      setStatus('🎉 搞掂！小幫手依家讀出答案…');
-
-      speakResponse();
+      setStatus('🎉 搞掂！按「讀出答案」聽語音。');
 
     } catch (err) {
       setStatus('❌ 出錯了：' + err.message, true);
