@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>圖圖小幫手 🎨</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --yellow: #FFD93D;
+      --red:    #FF6B6B;
+      --blue:   #4ECDC4;
+      --green:  #95D44A;
+      --purple: #C77DFF;
+      --bg:     #FFF9F0;
+      --card:   #FFFFFF;
+      --border: 3px solid #222;
+      --radius: 18px;
+      --shadow: 5px 5px 0px #222;
+    }
+
+    body {
+      font-family: 'Nunito', 'PingFang HK', 'Microsoft JhengHei', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      padding: 24px 16px 60px;
+      background-image:
+        radial-gradient(circle at 10% 20%, #FFD93D33 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, #4ECDC433 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, #FF6B6B18 0%, transparent 60%);
+    }
+
+    /* ─── Header ─── */
+    header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    header .title-wrap {
+      display: inline-block;
+      background: var(--yellow);
+      border: var(--border);
+      border-radius: var(--radius);
+      padding: 10px 28px 14px;
+      box-shadow: var(--shadow);
+      transform: rotate(-1.5deg);
+    }
+    header h1 {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 900;
+      color: #222;
+      line-height: 1.2;
+    }
+    header p.subtitle {
+      font-size: 1rem;
+      color: #444;
+      margin-top: 6px;
+    }
+    .sticker-row {
+      font-size: 2rem;
+      letter-spacing: 6px;
+      margin-top: 8px;
+    }
+
+
+    /* ─── Main layout ─── */
+    .main {
+      max-width: 680px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ─── Card ─── */
+    .card {
+      background: var(--card);
+      border: var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      position: relative;
+    }
+    .card-label {
+      position: absolute;
+      top: -14px;
+      left: 18px;
+      background: var(--red);
+      color: #fff;
+      font-weight: 900;
+      font-size: .85rem;
+      padding: 3px 14px;
+      border: 2px solid #222;
+      border-radius: 20px;
+    }
+    .card-label.blue  { background: var(--blue); color: #222; }
+    .card-label.green { background: var(--green); color: #222; }
+
+    /* ─── Upload zone ─── */
+    .upload-zone {
+      border: 3px dashed #bbb;
+      border-radius: 14px;
+      padding: 36px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: var(--red);
+      background: #FFF0EE;
+    }
+    .upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .upload-icon { font-size: 3rem; line-height: 1; }
+    .upload-zone p { font-size: .95rem; color: #666; margin-top: 10px; }
+    .upload-zone strong { color: var(--red); }
+
+    /* ─── Preview ─── */
+    #preview-wrap {
+      display: none;
+      margin-top: 16px;
+      position: relative;
+    }
+    #preview-wrap img {
+      width: 100%;
+      max-height: 320px;
+      object-fit: contain;
+      border-radius: 12px;
+      border: 2px solid #ddd;
+      display: block;
+    }
+    #remove-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: var(--red);
+      color: #fff;
+      border: 2px solid #222;
+      border-radius: 50%;
+      width: 32px; height: 32px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .1s;
+    }
+    #remove-btn:hover { transform: scale(1.15); }
+
+    /* ─── Question input ─── */
+    .question-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      align-items: flex-end;
+    }
+    .question-row textarea {
+      flex: 1;
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-family: inherit;
+      font-size: .95rem;
+      resize: none;
+      outline: none;
+      transition: border-color .2s;
+      min-height: 52px;
+      max-height: 120px;
+    }
+    .question-row textarea:focus { border-color: var(--blue); }
+    .question-row textarea::placeholder { color: #aaa; }
+
+    /* ─── Button ─── */
+    .btn-ask {
+      background: var(--red);
+      color: #fff;
+      font-family: inherit;
+      font-weight: 900;
+      font-size: 1rem;
+      border: 2px solid #222;
+      border-radius: 14px;
+      padding: 12px 20px;
+      cursor: pointer;
+      box-shadow: 3px 3px 0 #222;
+      transition: transform .1s, box-shadow .1s;
+      white-space: nowrap;
+    }
+    .btn-ask:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #222; }
+    .btn-ask:active { transform: translate(1px,1px); box-shadow: 2px 2px 0 #222; }
+    .btn-ask:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: 3px 3px 0 #aaa;
+    }
+
+    /* ─── Response ─── */
+    #response-card { display: none; }
+
+    .response-bubble {
+      background: #EEF9FF;
+      border: 2px solid #BCE8F8;
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 1rem;
+      line-height: 1.65;
+      color: #222;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .tts-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+    .tts-row span { font-size: .85rem; color: #777; }
+
+    .btn-tts {
+      background: var(--green);
+      color: #222;
+      font-family: inherit;
+      font-weight: 900;
+      font-size: .9rem;
+      border: 2px solid #222;
+      border-radius: 12px;
+      padding: 8px 18px;
+      cursor: pointer;
+      box-shadow: 3px 3px 0 #222;
+      transition: transform .1s, box-shadow .1s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-tts:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #222; }
+    .btn-tts:active { transform: translate(1px,1px); box-shadow: 2px 2px 0 #222; }
+    .btn-tts:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: 3px 3px 0 #aaa; }
+
+    #audio-player {
+      display: none;
+      width: 100%;
+      margin-top: 12px;
+      border-radius: 8px;
+    }
+
+    /* ─── Loading ─── */
+    .loading-dots {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .loading-dots span {
+      width: 10px; height: 10px;
+      background: var(--blue);
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
+    }
+    .loading-dots span:nth-child(2) { animation-delay: .2s; }
+    .loading-dots span:nth-child(3) { animation-delay: .4s; }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-8px); }
+    }
+
+    /* ─── Status toast ─── */
+    #status {
+      text-align: center;
+      font-size: .85rem;
+      color: #888;
+      min-height: 20px;
+      transition: opacity .3s;
+    }
+    #status.error { color: var(--red); font-weight: 700; }
+
+    /* ─── Footer ─── */
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: .8rem;
+      color: #bbb;
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 480px) {
+      .question-row { flex-direction: column; }
+      .btn-ask { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="title-wrap">
+    <h1>圖圖小幫手 🎨</h1>
+    <p class="subtitle">上傳圖片，我來告訴你裡面有咩！</p>
+    <div class="sticker-row">🌈 ⭐ 🐼 ✏️</div>
+  </div>
+</header>
+
+
+<div class="main">
+
+  <!-- Upload card -->
+  <div class="card">
+    <span class="card-label">📸 上傳圖片</span>
+    <div class="upload-zone" id="drop-zone">
+      <input type="file" id="file-input" accept="image/*" />
+      <div class="upload-icon">🖼️</div>
+      <p>將圖片拖拉到這裡<br/>或者 <strong>點一點</strong> 揀圖片</p>
+    </div>
+    <div id="preview-wrap">
+      <img id="preview-img" src="" alt="preview" />
+      <button id="remove-btn" title="移除">✕</button>
+    </div>
+
+    <div class="question-row">
+      <textarea id="question" rows="2" placeholder="問小幫手一個問題（例如：呢張圖係咩嚟？）">呢張圖係咩嚟？請用廣東話解釋。</textarea>
+      <button class="btn-ask" id="ask-btn">🔍 問！</button>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div id="status"></div>
+
+  <!-- Response card -->
+  <div class="card" id="response-card">
+    <span class="card-label blue">🤖 小幫手話…</span>
+    <div class="response-bubble" id="response-text"></div>
+    <div class="tts-row">
+      <button class="btn-tts" id="tts-btn">🔊 讀出答案</button>
+      <span id="tts-status"></span>
+    </div>
+    <audio id="audio-player" controls></audio>
+  </div>
+
+</div>
+
+
+<script>
+  const dropZone   = document.getElementById('drop-zone');
+  const fileInput  = document.getElementById('file-input');
+  const previewWrap= document.getElementById('preview-wrap');
+  const previewImg = document.getElementById('preview-img');
+  const removeBtn  = document.getElementById('remove-btn');
+  const askBtn     = document.getElementById('ask-btn');
+  const questionEl = document.getElementById('question');
+  const statusEl   = document.getElementById('status');
+  const responseCard = document.getElementById('response-card');
+  const responseText = document.getElementById('response-text');
+  const ttsBtn     = document.getElementById('tts-btn');
+  const ttsStatus  = document.getElementById('tts-status');
+  const audioPlayer= document.getElementById('audio-player');
+
+  let imageDataURL = null;
+
+  /* ─── Drag & drop ─── */
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) loadFile(file);
+  });
+  fileInput.addEventListener('change', () => { if (fileInput.files[0]) loadFile(fileInput.files[0]); });
+  removeBtn.addEventListener('click', () => {
+    imageDataURL = null;
+    previewWrap.style.display = 'none';
+    previewImg.src = '';
+    fileInput.value = '';
+    responseCard.style.display = 'none';
+    setStatus('');
+  });
+
+  function loadFile(file) {
+    if (!file.type.startsWith('image/')) { setStatus('⚠️ 只接受圖片檔案！', true); return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+      imageDataURL = e.target.result;
+      previewImg.src = imageDataURL;
+      previewWrap.style.display = 'block';
+      setStatus('✅ 圖片載入成功，可以問問題了！');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  /* ─── Ask AI ─── */
+  askBtn.addEventListener('click', askAI);
+  questionEl.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askAI(); }
+  });
+
+  async function askAI() {
+    if (!imageDataURL){ setStatus('❌ 請先上傳一張圖片！', true); return; }
+
+    const question = questionEl.value.trim() || '呢張圖係咩嚟？請詳細解釋。';
+
+    askBtn.disabled = true;
+    askBtn.innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span>';
+    setStatus('🤔 小幫手正在睇緊張圖…');
+    responseCard.style.display = 'none';
+    audioPlayer.style.display = 'none';
+
+    try {
+      const resp = await fetch('/api/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageUrl: imageDataURL, question })
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.error?.message || err.error || `HTTP ${resp.status}`);
+      }
+
+      const data = await resp.json();
+      const answer = data.choices?.[0]?.message?.content ?? '（沒有回應）';
+
+      responseText.textContent = answer;
+      responseCard.style.display = 'block';
+      ttsStatus.textContent = '';
+      audioPlayer.style.display = 'none';
+      setStatus('🎉 搞掂！小幫手依家讀出答案…');
+
+      speakResponse();
+
+    } catch (err) {
+      setStatus('❌ 出錯了：' + err.message, true);
+    } finally {
+      askBtn.disabled = false;
+      askBtn.innerHTML = '🔍 問！';
+    }
+  }
+
+  /* ─── TTS ─── */
+  ttsBtn.addEventListener('click', speakResponse);
+
+  async function speakResponse() {
+    const text = responseText.textContent.trim();
+    if (!text) return;
+
+    ttsBtn.disabled = true;
+    ttsStatus.textContent = '⏳ 正在生成語音…';
+    audioPlayer.style.display = 'none';
+
+    try {
+      const resp = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.message || `HTTP ${resp.status}`);
+      }
+
+      const contentType = resp.headers.get('Content-Type') || '';
+
+      if (contentType.includes('audio') || contentType.includes('octet-stream')) {
+        /* Direct audio binary response */
+        const blob = await resp.blob();
+        playAudioBlob(blob);
+      } else {
+        /* JSON response — look for base64 audio */
+        const data = await resp.json();
+        const audioUrl  = data.output?.audio?.url;
+        const audioB64  = data.output?.audio?.data ?? data.output?.data;
+
+        if (audioUrl) {
+          audioPlayer.src = audioUrl;
+          audioPlayer.style.display = 'block';
+          audioPlayer.play();
+          ttsStatus.textContent = '🔊 播放中…';
+        } else if (audioB64) {
+          const mimeType = data.output?.audio?.content_type ?? 'audio/mpeg';
+          const blob = b64ToBlob(audioB64, mimeType);
+          playAudioBlob(blob);
+        } else {
+          throw new Error('回應中找不到音頻資料');
+        }
+      }
+    } catch (err) {
+      ttsStatus.textContent = '❌ TTS 錯誤：' + err.message;
+      setStatus('⚠️ 語音生成出錯，可以按「讀出答案」重試。');
+    } finally {
+      ttsBtn.disabled = false;
+    }
+  }
+
+  function playAudioBlob(blob) {
+    const url = URL.createObjectURL(blob);
+    audioPlayer.src = url;
+    audioPlayer.style.display = 'block';
+    audioPlayer.play();
+    ttsStatus.textContent = '🔊 播放中…';
+    setStatus('🔊 小幫手正在講…');
+    audioPlayer.onended = () => {
+      ttsStatus.textContent = '✅ 播完了！';
+      setStatus('✅ 完成！可以再上傳另一張圖片。');
+    };
+  }
+
+  function b64ToBlob(b64, mime) {
+    const bytes = atob(b64);
+    const arr   = new Uint8Array(bytes.length);
+    for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
+    return new Blob([arr], { type: mime });
+  }
+
+  /* ─── Helpers ─── */
+  function setStatus(msg, isError = false) {
+    statusEl.textContent = msg;
+    statusEl.className = isError ? 'error' : '';
+  }
+</script>
+</body>
+</html>
