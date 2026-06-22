@@ -14,7 +14,7 @@ export default async function handler(req, res) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      model: 'qwen-vl-plus',
+      model: 'qwen3.5-flash',
       messages: [{
         role: 'user',
         content: [
