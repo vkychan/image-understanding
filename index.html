@@ -486,6 +486,7 @@
       const data = await resp.json();
       const answer = data.choices?.[0]?.message?.content ?? '（沒有回應）';
 
+      console.log('=== AI raw response ===', answer);
       responseText.textContent = answer;
       responseCard.style.display = 'block';
       ttsStatus.textContent = '';
@@ -503,7 +504,7 @@
 
   /* ─── Seal price display ─── */
   function parsePrice(text) {
-    const match = text.match(/(?:HK\$|\$|港幣|HKD\s*)?(\d+)(?:[.．](\d+))?/);
+    const match = text.match(/(?:HK\$|\$|港幣|HKD\s*)(\d+)(?:[.．](\d+))?/);
     if (!match) return null;
     return { dollars: match[1], cents: match[2] || null };
   }
