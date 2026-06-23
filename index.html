@@ -320,11 +320,17 @@
       align-items: center;
       gap: 6px;
     }
-    .seal-num {
-      font-size: 2.2rem;
-      font-weight: 900;
-      color: #333;
-      line-height: 1;
+    .seal-chars {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      gap: 4px;
+    }
+    .seal-char-img {
+      height: 60px;
+      width: auto;
+      object-fit: contain;
+      display: block;
     }
     .seal-img {
       height: 72px;
@@ -367,7 +373,7 @@
     </div>
 
     <div class="question-row">
-      <textarea id="question" rows="2" placeholder="問小幫手關於價錢牌嘅問題…">請用廣東話回答：1) 呢件係咩物品？ 2) 價格係幾多？請以「$XX.XX」或「$XX」格式列出價格。</textarea>
+      <textarea id="question" rows="2" placeholder="問小幫手關於價錢牌嘅問題…">請從這張價錢牌圖片提取價格。第一行只需以「$XX.XX」或「$XX」格式列出價格數字，第二行用一句廣東話簡單描述商品同價錢。</textarea>
       <button class="btn-ask" id="ask-btn">🔍 問！</button>
     </div>
   </div>
@@ -385,12 +391,12 @@
       <div class="seal-title">💎 以小篆顯示價格</div>
       <div class="seal-row">
         <div class="seal-unit" id="seal-dollar-wrap">
-          <span class="seal-num" id="seal-dollar-num"></span>
+          <div class="seal-chars" id="seal-dollar-chars"></div>
           <img src="/images/dollar.png" class="seal-img" alt="圓" />
         </div>
         <div class="seal-unit" id="seal-cent-wrap" style="display:none;">
-          <span class="seal-num" id="seal-cent-num"></span>
-          <img src="/images/cent.png" class="seal-img" alt="仙" />
+          <div class="seal-chars" id="seal-cent-chars"></div>
+          <img src="/images/cents.png" class="seal-img" alt="仙" />
         </div>
       </div>
     </div>
@@ -504,24 +510,79 @@
 
   /* ─── Seal price display ─── */
   function parsePrice(text) {
-    const match = text.match(/(?:HK\$|\$|港幣|HKD\s*)(\d+)(?:[.．](\d+))?/);
+    const match = text.match(/(?:HK\$|\$|港幣|HKD\s*)?(\d+)(?:[.．](\d{1,2}))?/);
     if (!match) return null;
-    return { dollars: match[1], cents: match[2] || null };
+    const dollars = parseInt(match[1], 10);
+    let cents = null;
+    if (match[2]) {
+      // Normalise to full two-digit cents (e.g. ".5" → 50 仙)
+      cents = match[2].length === 1 ? parseInt(match[2], 10) * 10 : parseInt(match[2], 10);
+    }
+    return { dollars, cents };
+  }
+
+  /* Convert an integer to an ordered list of /images/*.png filenames.
+     Filenames expected:  1.png–9.png  shi.png  bai.png  qian.png  wan.png  */
+  function numberToSealImgs(n) {
+    if (!n || n <= 0) return [];
+    n = Math.floor(n);
+    const imgs = [];
+    let hasPrefix = false;
+
+    const units = [
+      { value: 10000, file: 'wan.png'  },
+      { value: 1000,  file: 'qian.png' },
+      { value: 100,   file: 'bai.png'  },
+    ];
+
+    for (const { value, file } of units) {
+      const d = Math.floor(n / value);
+      if (d > 0) {
+        imgs.push(`${d}.png`, file);
+        n %= value;
+        hasPrefix = true;
+      }
+    }
+
+    const shi = Math.floor(n / 10);
+    if (shi > 0) {
+      // Traditional Chinese: 10-19 without a leading 一 when it is the largest unit
+      if (shi === 1 && !hasPrefix) {
+        imgs.push('shi.png');
+      } else {
+        imgs.push(`${shi}.png`, 'shi.png');
+      }
+      n %= 10;
+    }
+
+    if (n > 0) imgs.push(`${n}.png`);
+
+    return imgs;
+  }
+
+  function renderSealChars(containerId, imgFiles) {
+    const el = document.getElementById(containerId);
+    el.innerHTML = '';
+    for (const file of imgFiles) {
+      const img = document.createElement('img');
+      img.src = `/images/${file}`;
+      img.className = 'seal-char-img';
+      img.alt = file.replace('.png', '');
+      el.appendChild(img);
+    }
   }
 
   function showSealPrice(text) {
-    const sealDisplay  = document.getElementById('seal-display');
-    const dollarNum    = document.getElementById('seal-dollar-num');
-    const centWrap     = document.getElementById('seal-cent-wrap');
-    const centNum      = document.getElementById('seal-cent-num');
+    const sealDisplay = document.getElementById('seal-display');
+    const centWrap    = document.getElementById('seal-cent-wrap');
 
     const price = parsePrice(text);
     if (!price) { sealDisplay.style.display = 'none'; return; }
 
-    dollarNum.textContent = price.dollars;
+    renderSealChars('seal-dollar-chars', numberToSealImgs(price.dollars));
 
-    if (price.cents) {
-      centNum.textContent = price.cents;
+    if (price.cents && price.cents > 0) {
+      renderSealChars('seal-cent-chars', numberToSealImgs(price.cents));
       centWrap.style.display = 'flex';
     } else {
       centWrap.style.display = 'none';
