@@ -1,699 +1,384 @@
 <!DOCTYPE html>
-<html lang="zh-HK">
+<html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>圖圖小幫手 🎨</title>
+  <title>秦港通 — 余振強紀念第二中學</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --yellow: #FFD93D;
-      --red:    #FF6B6B;
-      --blue:   #4ECDC4;
-      --green:  #95D44A;
-      --purple: #C77DFF;
-      --bg:     #FFF9F0;
-      --card:   #FFFFFF;
-      --border: 3px solid #222;
-      --radius: 18px;
-      --shadow: 5px 5px 0px #222;
-    }
-
-    body {
-      font-family: 'Nunito', 'PingFang HK', 'Microsoft JhengHei', sans-serif;
-      background: var(--bg);
-      min-height: 100vh;
-      padding: 24px 16px 60px;
-      background-image:
-        radial-gradient(circle at 10% 20%, #FFD93D33 0%, transparent 40%),
-        radial-gradient(circle at 90% 80%, #4ECDC433 0%, transparent 40%),
-        radial-gradient(circle at 50% 50%, #FF6B6B18 0%, transparent 60%);
-    }
-
-    /* ─── Header ─── */
-    header {
-      text-align: center;
-      margin-bottom: 28px;
-    }
-    header .title-wrap {
-      display: inline-block;
-      background: var(--yellow);
-      border: var(--border);
-      border-radius: var(--radius);
-      padding: 10px 28px 14px;
-      box-shadow: var(--shadow);
-      transform: rotate(-1.5deg);
-    }
-    header h1 {
-      font-size: clamp(1.8rem, 5vw, 2.8rem);
-      font-weight: 900;
-      color: #222;
-      line-height: 1.2;
-    }
-    header p.subtitle {
-      font-size: 1rem;
-      color: #444;
-      margin-top: 6px;
-    }
-    .sticker-row {
-      font-size: 2rem;
-      letter-spacing: 6px;
-      margin-top: 8px;
-    }
-
-
-    /* ─── Main layout ─── */
-    .main {
-      max-width: 680px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    /* ─── Card ─── */
-    .card {
-      background: var(--card);
-      border: var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 20px;
-      position: relative;
-    }
-    .card-label {
-      position: absolute;
-      top: -14px;
-      left: 18px;
-      background: var(--red);
-      color: #fff;
-      font-weight: 900;
-      font-size: .85rem;
-      padding: 3px 14px;
-      border: 2px solid #222;
-      border-radius: 20px;
-    }
-    .card-label.blue  { background: var(--blue); color: #222; }
-    .card-label.green { background: var(--green); color: #222; }
-
-    /* ─── Upload zone ─── */
-    .upload-zone {
-      border: 3px dashed #bbb;
-      border-radius: 14px;
-      padding: 36px 20px;
-      text-align: center;
-      cursor: pointer;
-      transition: border-color .2s, background .2s;
-      position: relative;
-      overflow: hidden;
-    }
-    .upload-zone:hover, .upload-zone.drag-over {
-      border-color: var(--red);
-      background: #FFF0EE;
-    }
-    .upload-zone input[type="file"] {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      cursor: pointer;
-    }
-    .upload-icon { font-size: 3rem; line-height: 1; }
-    .upload-zone p { font-size: .95rem; color: #666; margin-top: 10px; }
-    .upload-zone strong { color: var(--red); }
-
-    /* ─── Preview ─── */
-    #preview-wrap {
-      display: none;
-      margin-top: 16px;
-      position: relative;
-    }
-    #preview-wrap img {
-      width: 100%;
-      max-height: 320px;
-      object-fit: contain;
-      border-radius: 12px;
-      border: 2px solid #ddd;
-      display: block;
-    }
-    #remove-btn {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: var(--red);
-      color: #fff;
-      border: 2px solid #222;
-      border-radius: 50%;
-      width: 32px; height: 32px;
-      font-size: 1.1rem;
-      cursor: pointer;
-      font-weight: 900;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform .1s;
-    }
-    #remove-btn:hover { transform: scale(1.15); }
-
-    /* ─── Question input ─── */
-    .question-row {
-      display: flex;
-      gap: 10px;
-      margin-top: 16px;
-      align-items: flex-end;
-    }
-    .question-row textarea {
-      flex: 1;
-      border: 2px solid #ddd;
-      border-radius: 12px;
-      padding: 10px 14px;
-      font-family: inherit;
-      font-size: .95rem;
-      resize: none;
-      outline: none;
-      transition: border-color .2s;
-      min-height: 52px;
-      max-height: 120px;
-    }
-    .question-row textarea:focus { border-color: var(--blue); }
-    .question-row textarea::placeholder { color: #aaa; }
-
-    /* ─── Button ─── */
-    .btn-ask {
-      background: var(--red);
-      color: #fff;
-      font-family: inherit;
-      font-weight: 900;
-      font-size: 1rem;
-      border: 2px solid #222;
-      border-radius: 14px;
-      padding: 12px 20px;
-      cursor: pointer;
-      box-shadow: 3px 3px 0 #222;
-      transition: transform .1s, box-shadow .1s;
-      white-space: nowrap;
-    }
-    .btn-ask:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #222; }
-    .btn-ask:active { transform: translate(1px,1px); box-shadow: 2px 2px 0 #222; }
-    .btn-ask:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: 3px 3px 0 #aaa;
-    }
-
-    /* ─── Response ─── */
-    #response-card { display: none; }
-
-    .response-bubble {
-      background: #EEF9FF;
-      border: 2px solid #BCE8F8;
-      border-radius: 14px;
-      padding: 16px;
-      font-size: 1rem;
-      line-height: 1.65;
-      color: #222;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    .tts-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-top: 14px;
-      flex-wrap: wrap;
-    }
-    .tts-row span { font-size: .85rem; color: #777; }
-
-    .btn-tts {
-      background: var(--green);
-      color: #222;
-      font-family: inherit;
-      font-weight: 900;
-      font-size: .9rem;
-      border: 2px solid #222;
-      border-radius: 12px;
-      padding: 8px 18px;
-      cursor: pointer;
-      box-shadow: 3px 3px 0 #222;
-      transition: transform .1s, box-shadow .1s;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .btn-tts:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #222; }
-    .btn-tts:active { transform: translate(1px,1px); box-shadow: 2px 2px 0 #222; }
-    .btn-tts:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: 3px 3px 0 #aaa; }
-
-    #audio-player {
-      display: none;
-      width: 100%;
-      margin-top: 12px;
-      border-radius: 8px;
-    }
-
-    /* ─── Loading ─── */
-    .loading-dots {
-      display: inline-flex;
-      gap: 6px;
-      align-items: center;
-    }
-    .loading-dots span {
-      width: 10px; height: 10px;
-      background: var(--blue);
-      border-radius: 50%;
-      animation: bounce 1.2s infinite;
-    }
-    .loading-dots span:nth-child(2) { animation-delay: .2s; }
-    .loading-dots span:nth-child(3) { animation-delay: .4s; }
-    @keyframes bounce {
-      0%, 80%, 100% { transform: translateY(0); }
-      40% { transform: translateY(-8px); }
-    }
-
-    /* ─── Status toast ─── */
-    #status {
-      text-align: center;
-      font-size: .85rem;
-      color: #888;
-      min-height: 20px;
-      transition: opacity .3s;
-    }
-    #status.error { color: var(--red); font-weight: 700; }
-
-    /* ─── Footer ─── */
-    footer {
-      text-align: center;
-      margin-top: 40px;
-      font-size: .8rem;
-      color: #bbb;
-    }
-
-    /* ─── 小篆 Price Display ─── */
-    #seal-display {
-      margin-top: 18px;
-      background: linear-gradient(160deg, #FDF6E3 0%, #F5E6C8 100%);
-      border: 2px solid #C8A96E;
-      border-radius: 14px;
-      padding: 20px 28px;
-      text-align: center;
-      box-shadow: inset 0 0 24px #C8A96E28;
-      position: relative;
-      overflow: hidden;
-    }
-    /* Faint vertical ruling lines like 朱絲欄 */
-    #seal-display::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image: repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 72px,
-        #C8A96E33 72px,
-        #C8A96E33 74px
-      );
-      pointer-events: none;
-    }
-    .seal-title {
-      font-size: .8rem;
-      font-weight: 700;
-      color: #9A7040;
-      margin-bottom: 16px;
-      letter-spacing: 2px;
-      position: relative;
-    }
-    .seal-row {
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 28px;
-      flex-wrap: wrap;
-      position: relative;
-    }
-    .seal-unit {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0;
-    }
-    .seal-chars {
-      display: flex;
-      flex-direction: column; /* vertical, top → bottom */
-      align-items: center;
-      gap: 2px;
-    }
-    .seal-char-img {
-      height: 52px;
-      width: auto;
-      object-fit: contain;
-      display: block;
-    }
-    .seal-img {
-      height: 60px;
-      width: auto;
-      object-fit: contain;
-      display: block;
-      margin-top: 8px;
-      padding-top: 8px;
-      border-top: 1px solid #C8A96E99;
-    }
-
-    /* ─── Responsive ─── */
-    @media (max-width: 480px) {
-      .question-row { flex-direction: column; }
-      .btn-ask { width: 100%; }
-    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse-anim { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .animate-fadeIn { animation: fadeIn 0.3s ease-out; }
+    .pulse { animation: pulse-anim 2s infinite; }
+    body { font-family: 'Georgia', serif; min-height: 100vh; }
   </style>
 </head>
-<body>
+<body class="flex flex-col min-h-screen bg-slate-50">
 
-<header>
-  <div class="title-wrap">
-    <h1>價錢牌小幫手 🏷️</h1>
-    <p class="subtitle">上傳價錢牌，我幫你讀出價格！</p>
-    <div class="sticker-row">💰 🏷️ ✨ 🖊️</div>
+<!-- HEADER -->
+<header class="border-b border-emerald-100 bg-white/95 backdrop-blur-md sticky top-0 z-50 px-5 py-3 shadow-sm">
+  <div class="max-w-4xl mx-auto flex items-center gap-3">
+    <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style="background:linear-gradient(135deg,#10b981,#34d399)">
+      <span style="font-size:20px">🪙</span>
+    </div>
+    <div>
+      <h1 class="font-black tracking-widest text-base text-slate-800 leading-tight">余振強紀念第二中學</h1>
+      <p class="text-xs text-slate-500 tracking-widest mt-0.5">秦港通 👑 陛下御用 · 現代商場物價通辨要術</p>
+    </div>
   </div>
 </header>
 
+<!-- MAIN -->
+<main class="flex-1 max-w-4xl w-full mx-auto p-4 flex flex-col">
+  <div class="flex-1 flex flex-col py-2">
 
-<div class="main">
-
-  <!-- Upload card -->
-  <div class="card">
-    <span class="card-label">📸 上傳價錢牌</span>
-    <div class="upload-zone" id="drop-zone">
-      <input type="file" id="file-input" accept="image/*" />
-      <div class="upload-icon">🏷️</div>
-      <p>將價錢牌圖片拖拉到這裡<br/>或者 <strong>點一點</strong> 揀圖片</p>
-    </div>
-    <div id="preview-wrap">
-      <img id="preview-img" src="" alt="preview" />
-      <button id="remove-btn" title="移除">✕</button>
+    <!-- TITLE IMAGE -->
+    <div class="text-center py-4 bg-white rounded-2xl border border-emerald-100 mb-5 flex flex-col items-center justify-center gap-2 shadow-sm">
+      <img src="images/qin-gang-dong.png" alt="秦港通" style="height:60px; object-fit:contain;" />
+      <p class="text-xs text-slate-500 tracking-widest font-bold">🏛️ 御覽諸夏新物 ⚖️ 銖兩折算呈摺</p>
     </div>
 
-    <div class="question-row">
-      <textarea id="question" rows="2" placeholder="問小幫手關於價錢牌嘅問題…">請從這張價錢牌圖片提取價格。第一行只需以「$XX.XX」或「$XX」格式列出價格數字，第二行用一句廣東話簡單描述商品同價錢。</textarea>
-      <button class="btn-ask" id="ask-btn">🔍 問！</button>
-    </div>
-  </div>
+    <!-- TWO COLUMN -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-5 mb-5 items-start">
 
-  <!-- Status -->
-  <div id="status"></div>
+      <!-- LEFT COLUMN -->
+      <div class="md:col-span-5 flex flex-col gap-4">
 
-  <!-- Response card -->
-  <div class="card" id="response-card">
-    <span class="card-label blue">🤖 小幫手話…</span>
-    <div class="response-bubble" id="response-text"></div>
+        <!-- IMAGE UPLOAD (fixed 3:4 ratio) -->
+        <div class="bg-white rounded-2xl border-2 border-emerald-50 p-4 relative shadow-sm">
+          <div class="absolute top-2 left-2 w-3.5 h-3.5 border-t-2 border-l-2 border-emerald-500/80 pointer-events-none"></div>
+          <div class="absolute top-2 right-2 w-3.5 h-3.5 border-t-2 border-r-2 border-emerald-500/80 pointer-events-none"></div>
+          <div class="absolute bottom-2 left-2 w-3.5 h-3.5 border-b-2 border-l-2 border-emerald-500/80 pointer-events-none"></div>
+          <div class="absolute bottom-2 right-2 w-3.5 h-3.5 border-b-2 border-r-2 border-emerald-500/80 pointer-events-none"></div>
 
-    <!-- 小篆 price display -->
-    <div id="seal-display" style="display:none;">
-      <div class="seal-title">💎 以小篆顯示價格</div>
-      <div class="seal-row">
-        <div class="seal-unit" id="seal-dollar-wrap">
-          <div class="seal-chars" id="seal-dollar-chars"></div>
-          <img src="/images/dollar.png" class="seal-img" alt="圓" />
+          <div class="text-xs font-bold text-slate-400 mb-2 flex items-center justify-between tracking-wider">
+            <span>📸 影照儀（輕觸畫幅以攝取商品）</span>
+            <span class="text-emerald-500 pulse font-bold">● 連線中</span>
+          </div>
+
+          <!-- Fixed 3:4 ratio wrapper -->
+          <div style="aspect-ratio: 3 / 4; position: relative;" class="rounded-xl overflow-hidden">
+
+            <!-- Placeholder -->
+            <div id="uploadPlaceholder"
+              class="absolute inset-0 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-emerald-400 hover:bg-emerald-50/20 transition-all"
+              onclick="document.getElementById('fileInput').click()">
+              <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="handleImageUpload(event)" />
+              <div class="flex flex-col items-center text-slate-400 text-center px-4">
+                <div class="w-14 h-14 rounded-full bg-white flex items-center justify-center mb-3 border border-slate-100 shadow-sm">
+                  <span style="font-size:24px">🖼️</span>
+                </div>
+                <p class="text-sm font-black text-slate-700 mb-1 tracking-wider">📸 輕觸攝取新物</p>
+                <p class="text-xs text-slate-400 max-w-40 leading-relaxed">點擊選取商品圖片或拍攝</p>
+              </div>
+            </div>
+
+            <!-- Image preview -->
+            <div id="imageContainer" class="absolute inset-0 hidden">
+              <img id="uploadedImg" src="" alt="商品" class="w-full h-full object-contain" />
+              <button onclick="removeImage()"
+                class="absolute top-2 right-2 w-8 h-8 rounded-full bg-red-500 text-white border-2 border-white flex items-center justify-center text-xs font-black shadow-lg z-10">✕</button>
+            </div>
+
+          </div>
         </div>
-        <div class="seal-unit" id="seal-cent-wrap" style="display:none;">
-          <div class="seal-chars" id="seal-cent-chars"></div>
-          <img src="/images/cent.png" class="seal-img" alt="仙" />
+
+        <!-- ASK AI BUTTON -->
+        <button id="askBtn" onclick="askAI()"
+          class="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black tracking-widest transition-all active:scale-95 shadow-md text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+          問問李丞相！
+        </button>
+
+        <!-- PRICE DISPLAY -->
+        <div class="bg-white rounded-2xl border-2 border-emerald-50 p-4 shadow-sm">
+          <div class="flex items-center gap-1.5 mb-3 border-b border-slate-100 pb-2.5">
+            <span>🪙</span>
+            <span class="text-xs font-bold tracking-wider text-slate-700">折合帝國半兩</span>
+          </div>
+          <div id="priceDisplay" class="flex items-center gap-1 flex-wrap" style="min-height:44px;">
+            <span class="text-slate-300 text-sm tracking-wider">— 尚未辨物 —</span>
+          </div>
+          <div class="mt-2 text-xs text-slate-400 text-right">* 壹兩 折合 港幣九元</div>
         </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="md:col-span-7 bg-white rounded-2xl border-2 border-emerald-50 p-5 shadow-sm flex flex-col relative overflow-hidden">
+
+        <!-- 秦 watermark -->
+        <div class="absolute right-0 bottom-0 opacity-5 text-emerald-600 pointer-events-none select-none"
+          style="font-size:180px; line-height:1; font-family:serif;">秦</div>
+
+        <div class="z-10 flex-1 flex flex-col">
+
+          <!-- Section header -->
+          <div class="flex items-center gap-2 mb-4 border-b border-slate-100 pb-2.5">
+            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500" style="box-shadow:0 0 8px rgba(16,185,129,0.4)"></div>
+            <span class="text-xs font-bold text-slate-700 tracking-widest">📋 辨物摺子</span>
+          </div>
+
+          <div class="space-y-4 flex-1 flex flex-col">
+
+            <!-- 御覽名黷 -->
+            <div class="bg-slate-50/80 p-4 rounded-xl border border-slate-100 relative overflow-hidden">
+              <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500 rounded-l-xl"></div>
+              <div class="text-xs font-bold text-emerald-600 tracking-widest mb-1.5 flex items-center gap-1">
+                <span>🏆</span><span>👑 御覽名黷</span>
+              </div>
+              <p id="productName" class="text-sm font-bold text-slate-800 tracking-wider leading-relaxed">
+                （待陛下攝取新物）
+              </p>
+            </div>
+
+            <!-- 大略案語 -->
+            <div class="bg-slate-50/80 p-4 rounded-xl border border-slate-100 flex-1 flex flex-col">
+              <div class="text-xs font-bold text-emerald-600 tracking-widest mb-2 flex items-center gap-1">
+                <span>📖</span><span>📜 大略案語</span>
+              </div>
+              <p id="shortDesc" class="text-slate-700 text-sm leading-relaxed tracking-widest flex-1 whitespace-pre-line"></p>
+              <div class="flex justify-end mt-3">
+                <button id="ttsBtn" onclick="speakResponse()"
+                  class="flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all active:scale-95 shadow-md disabled:opacity-50 disabled:cursor-not-allowed">
+                  ▶ 🗣️ 李斯啟奏
+                </button>
+              </div>
+              <audio id="audioPlayer" class="hidden w-full mt-2 rounded-lg" controls></audio>
+            </div>
+
+            <!-- Accordion: 詳解奏摺 -->
+            <div class="border border-emerald-100 rounded-xl overflow-hidden bg-slate-50/50">
+              <button onclick="toggleAccordion()"
+                class="w-full px-4 py-3 bg-slate-100/80 hover:bg-slate-200/50 flex items-center justify-between text-xs font-bold text-emerald-700 transition-all">
+                <span style="font-family:serif" class="text-sm tracking-wider">📜 詳解奏摺</span>
+                <span id="accordionArrow">▼</span>
+              </button>
+              <div id="accordionBody" class="hidden p-4 border-t border-emerald-100 bg-white animate-fadeIn">
+                <p id="detailDesc" class="text-slate-700 text-xs leading-loose tracking-widest whitespace-pre-line"></p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Footer row -->
+        <div class="mt-6 pt-3.5 border-t border-slate-100 flex items-center justify-between gap-3 z-10">
+          <div id="archiveId" class="text-xs text-slate-400 font-mono tracking-widest">🔖 帝國庫藏編號: —</div>
+          <button onclick="alert('臣已錄入！')"
+            class="px-4 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold tracking-widest transition-all flex items-center gap-1.5 active:scale-95 border border-emerald-200 shadow-sm">
+            📤 謄抄摺子
+          </button>
+        </div>
+
       </div>
     </div>
 
-    <div class="tts-row">
-      <button class="btn-tts" id="tts-btn">🔊 讀出答案</button>
-      <span id="tts-status"></span>
-    </div>
-    <audio id="audio-player" controls></audio>
   </div>
+</main>
 
-</div>
-
+<!-- FOOTER -->
+<footer class="border-t border-slate-100 py-4 bg-white text-center text-xs text-slate-400 shadow-inner">
+  <div class="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+    <span>大秦帝國主計署 咸陽宮製 ©️ 西元前221 – 二〇二六年.</span>
+    <span class="font-mono tracking-wider">大秦上計系統 · 銖兩折易制</span>
+  </div>
+</footer>
 
 <script>
-  const dropZone   = document.getElementById('drop-zone');
-  const fileInput  = document.getElementById('file-input');
-  const previewWrap= document.getElementById('preview-wrap');
-  const previewImg = document.getElementById('preview-img');
-  const removeBtn  = document.getElementById('remove-btn');
-  const askBtn     = document.getElementById('ask-btn');
-  const questionEl = document.getElementById('question');
-  const statusEl   = document.getElementById('status');
-  const responseCard = document.getElementById('response-card');
-  const responseText = document.getElementById('response-text');
-  const ttsBtn     = document.getElementById('tts-btn');
-  const ttsStatus  = document.getElementById('tts-status');
-  const audioPlayer= document.getElementById('audio-player');
+let imageDataURL = null;
+let aiResult = null;
+let isAccordionOpen = false;
 
-  let imageDataURL = null;
+function handleImageUpload(e) {
+  const file = e.target.files[0];
+  if (!file || !file.type.startsWith('image/')) return;
+  const reader = new FileReader();
+  reader.onload = (evt) => {
+    imageDataURL = evt.target.result;
+    document.getElementById('uploadedImg').src = imageDataURL;
+    document.getElementById('uploadPlaceholder').classList.add('hidden');
+    document.getElementById('imageContainer').classList.remove('hidden');
+  };
+  reader.readAsDataURL(file);
+}
 
-  /* ─── Drag & drop ─── */
-  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-  dropZone.addEventListener('drop', e => {
-    e.preventDefault();
-    dropZone.classList.remove('drag-over');
-    const file = e.dataTransfer.files[0];
-    if (file) loadFile(file);
-  });
-  fileInput.addEventListener('change', () => { if (fileInput.files[0]) loadFile(fileInput.files[0]); });
-  removeBtn.addEventListener('click', () => {
-    imageDataURL = null;
-    previewWrap.style.display = 'none';
-    previewImg.src = '';
-    fileInput.value = '';
-    responseCard.style.display = 'none';
-    document.getElementById('seal-display').style.display = 'none';
-    setStatus('');
-  });
+function removeImage() {
+  imageDataURL = null;
+  document.getElementById('fileInput').value = '';
+  document.getElementById('uploadedImg').src = '';
+  document.getElementById('imageContainer').classList.add('hidden');
+  document.getElementById('uploadPlaceholder').classList.remove('hidden');
+  resetRightColumn();
+}
 
-  function loadFile(file) {
-    if (!file.type.startsWith('image/')) { setStatus('⚠️ 只接受圖片檔案！', true); return; }
-    const reader = new FileReader();
-    reader.onload = e => {
-      imageDataURL = e.target.result;
-      previewImg.src = imageDataURL;
-      previewWrap.style.display = 'block';
-      setStatus('✅ 圖片載入成功，可以問問題了！');
-    };
-    reader.readAsDataURL(file);
+function resetRightColumn() {
+  document.getElementById('productName').textContent = '（待陛下攝取新物）';
+  document.getElementById('shortDesc').textContent = '';
+  document.getElementById('detailDesc').textContent = '';
+  document.getElementById('archiveId').textContent = '🔖 帝國庫藏編號: —';
+  document.getElementById('priceDisplay').innerHTML =
+    '<span class="text-slate-300 text-sm tracking-wider">— 尚未辨物 —</span>';
+  document.getElementById('audioPlayer').classList.add('hidden');
+  aiResult = null;
+}
+
+function toggleAccordion() {
+  isAccordionOpen = !isAccordionOpen;
+  document.getElementById('accordionBody').classList.toggle('hidden', !isAccordionOpen);
+  document.getElementById('accordionArrow').textContent = isAccordionOpen ? '▲' : '▼';
+}
+
+function renderPriceImages(n) {
+  const imgStyle = 'height:36px; display:inline-block; vertical-align:middle; margin:0 1px;';
+  const coinsStyle = 'height:40px; display:inline-block; vertical-align:middle; margin-left:4px;';
+  const coinsImg = `<img src="images/coins.png" style="${coinsStyle}" alt="兩" />`;
+
+  if (n <= 0) {
+    return `<span class="text-slate-700 text-xl font-black tracking-widest" style="vertical-align:middle;">零</span>${coinsImg}`;
   }
 
-  /* ─── Ask AI ─── */
-  askBtn.addEventListener('click', askAI);
-  questionEl.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askAI(); }
-  });
+  const parts = [];
+  let r = n;
 
-  async function askAI() {
-    if (!imageDataURL){ setStatus('❌ 請先上傳一張圖片！', true); return; }
-
-    const question = questionEl.value.trim() || '呢張圖係咩嚟？請詳細解釋。';
-
-    askBtn.disabled = true;
-    askBtn.innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span>';
-    setStatus('🤔 小幫手正在睇緊張圖…');
-    responseCard.style.display = 'none';
-    audioPlayer.style.display = 'none';
-
-    try {
-      const resp = await fetch('/api/ask', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ imageUrl: imageDataURL, question })
-      });
-
-      if (!resp.ok) {
-        const err = await resp.json().catch(() => ({}));
-        throw new Error(err.error?.message || err.error || `HTTP ${resp.status}`);
-      }
-
-      const data = await resp.json();
-      const answer = data.choices?.[0]?.message?.content ?? '（沒有回應）';
-
-      console.log('=== AI raw response ===', answer);
-      responseText.textContent = answer;
-      responseCard.style.display = 'block';
-      ttsStatus.textContent = '';
-      audioPlayer.style.display = 'none';
-      showSealPrice(answer);
-      setStatus('🎉 搞掂！按「讀出答案」聽語音。');
-
-    } catch (err) {
-      setStatus('❌ 出錯了：' + err.message, true);
-    } finally {
-      askBtn.disabled = false;
-      askBtn.innerHTML = '🔍 問！';
-    }
+  if (r >= 1000) {
+    const d = Math.floor(r / 1000);
+    parts.push(`<img src="images/${d}.png" style="${imgStyle}" />`);
+    parts.push(`<img src="images/qian.png" style="${imgStyle}" />`);
+    r %= 1000;
+  }
+  if (r >= 100) {
+    const d = Math.floor(r / 100);
+    parts.push(`<img src="images/${d}.png" style="${imgStyle}" />`);
+    parts.push(`<img src="images/bai.png" style="${imgStyle}" />`);
+    r %= 100;
+  }
+  if (r >= 10) {
+    const d = Math.floor(r / 10);
+    if (d > 1) parts.push(`<img src="images/${d}.png" style="${imgStyle}" />`);
+    parts.push(`<img src="images/shi.png" style="${imgStyle}" />`);
+    r %= 10;
+  }
+  if (r > 0) {
+    parts.push(`<img src="images/${r}.png" style="${imgStyle}" />`);
   }
 
-  /* ─── Seal price display ─── */
-  function parsePrice(text) {
-    const match = text.match(/(?:HK\$|\$|港幣|HKD\s*)?(\d+)(?:[.．](\d{1,2}))?/);
-    if (!match) return null;
-    const dollars = parseInt(match[1], 10);
-    let cents = null;
-    if (match[2]) {
-      // Normalise to full two-digit cents (e.g. ".5" → 50 仙)
-      cents = match[2].length === 1 ? parseInt(match[2], 10) * 10 : parseInt(match[2], 10);
-    }
-    return { dollars, cents };
+  parts.push(coinsImg);
+  return parts.join('');
+}
+
+async function askAI() {
+  if (!imageDataURL) {
+    alert('請先上傳一張圖片！');
+    return;
   }
 
-  /* Convert an integer to an ordered list of /images/*.png filenames.
-     Filenames expected:  1.png–9.png  shi.png  bai.png  qian.png  wan.png  */
-  function numberToSealImgs(n) {
-    if (!n || n <= 0) return [];
-    n = Math.floor(n);
-    const imgs = [];
-    let hasPrefix = false;
+  const btn = document.getElementById('askBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ 李丞相正在觀察…';
 
-    const units = [
-      { value: 10000, file: 'wan.png'  },
-      { value: 1000,  file: 'qian.png' },
-      { value: 100,   file: 'bai.png'  },
-    ];
+  try {
+    const resp = await fetch('/api/ask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imageUrl: imageDataURL })
+    });
 
-    for (const { value, file } of units) {
-      const d = Math.floor(n / value);
-      if (d > 0) {
-        imgs.push(`${d}.png`, file);
-        n %= value;
-        hasPrefix = true;
-      }
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.error || `HTTP ${resp.status}`);
     }
 
-    const shi = Math.floor(n / 10);
-    if (shi > 0) {
-      // Traditional Chinese: 10-19 without a leading 一 when it is the largest unit
-      if (shi === 1 && !hasPrefix) {
-        imgs.push('shi.png');
-      } else {
-        imgs.push(`${shi}.png`, 'shi.png');
-      }
-      n %= 10;
+    const data = await resp.json();
+
+    if (data.error) {
+      throw new Error(data.error + (data.raw ? '：' + data.raw.substring(0, 120) : ''));
     }
 
-    if (n > 0) imgs.push(`${n}.png`);
+    aiResult = data;
 
-    return imgs;
+    document.getElementById('productName').textContent =
+      `${data.modern_name}（${data.ancient_name}）`;
+    document.getElementById('shortDesc').textContent = data.short_desc || '';
+    document.getElementById('detailDesc').textContent = data.detail_desc || '';
+    document.getElementById('archiveId').textContent =
+      `🔖 帝國庫藏編號: ${data.archive_id || '—'}`;
+
+    const price = Math.max(0, parseInt(data.price_halfliang) || 0);
+    document.getElementById('priceDisplay').innerHTML = renderPriceImages(price);
+
+  } catch (err) {
+    alert('❌ 出錯了：' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '問問李丞相！';
   }
+}
 
-  function renderSealChars(containerId, imgFiles) {
-    const el = document.getElementById(containerId);
-    el.innerHTML = '';
-    for (const file of imgFiles) {
-      const img = document.createElement('img');
-      img.src = `/images/${file}`;
-      img.className = 'seal-char-img';
-      img.alt = file.replace('.png', '');
-      el.appendChild(img);
+async function speakResponse() {
+  if (!aiResult) return;
+
+  const text = [aiResult.short_desc, aiResult.detail_desc].filter(Boolean).join('\n');
+  if (!text.trim()) return;
+
+  const btn = document.getElementById('ttsBtn');
+  const audioPlayer = document.getElementById('audioPlayer');
+
+  btn.disabled = true;
+  btn.textContent = '⏳ 生成語音中…';
+  audioPlayer.classList.add('hidden');
+
+  try {
+    const resp = await fetch('/api/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.message || `HTTP ${resp.status}`);
     }
-  }
 
-  function showSealPrice(text) {
-    const sealDisplay = document.getElementById('seal-display');
-    const centWrap    = document.getElementById('seal-cent-wrap');
+    const contentType = resp.headers.get('Content-Type') || '';
 
-    const price = parsePrice(text);
-    if (!price) { sealDisplay.style.display = 'none'; return; }
-
-    renderSealChars('seal-dollar-chars', numberToSealImgs(price.dollars));
-
-    if (price.cents && price.cents > 0) {
-      renderSealChars('seal-cent-chars', numberToSealImgs(price.cents));
-      centWrap.style.display = 'flex';
+    if (contentType.includes('audio') || contentType.includes('octet-stream')) {
+      playAudioBlob(await resp.blob());
     } else {
-      centWrap.style.display = 'none';
-    }
+      const data = await resp.json();
+      const audioUrl = data.output?.audio?.url;
+      const audioB64 = data.output?.audio?.data ?? data.output?.data;
 
-    sealDisplay.style.display = 'block';
-  }
-
-  /* ─── TTS ─── */
-  ttsBtn.addEventListener('click', speakResponse);
-
-  async function speakResponse() {
-    const text = responseText.textContent.trim();
-    if (!text) return;
-
-    ttsBtn.disabled = true;
-    ttsStatus.textContent = '⏳ 正在生成語音…';
-    audioPlayer.style.display = 'none';
-
-    try {
-      const resp = await fetch('/api/tts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text })
-      });
-
-      if (!resp.ok) {
-        const err = await resp.json().catch(() => ({}));
-        throw new Error(err.message || `HTTP ${resp.status}`);
-      }
-
-      const contentType = resp.headers.get('Content-Type') || '';
-
-      if (contentType.includes('audio') || contentType.includes('octet-stream')) {
-        /* Direct audio binary response */
-        const blob = await resp.blob();
-        playAudioBlob(blob);
+      if (audioUrl) {
+        audioPlayer.src = audioUrl;
+        audioPlayer.classList.remove('hidden');
+        audioPlayer.play();
+      } else if (audioB64) {
+        playAudioBlob(b64ToBlob(audioB64, data.output?.audio?.content_type ?? 'audio/mpeg'));
       } else {
-        /* JSON response — look for base64 audio */
-        const data = await resp.json();
-        const audioUrl  = data.output?.audio?.url;
-        const audioB64  = data.output?.audio?.data ?? data.output?.data;
-
-        if (audioUrl) {
-          audioPlayer.src = audioUrl;
-          audioPlayer.style.display = 'block';
-          audioPlayer.play();
-          ttsStatus.textContent = '🔊 播放中…';
-        } else if (audioB64) {
-          const mimeType = data.output?.audio?.content_type ?? 'audio/mpeg';
-          const blob = b64ToBlob(audioB64, mimeType);
-          playAudioBlob(blob);
-        } else {
-          throw new Error('回應中找不到音頻資料');
-        }
+        throw new Error('回應中找不到音頻資料');
       }
-    } catch (err) {
-      ttsStatus.textContent = '❌ TTS 錯誤：' + err.message;
-      setStatus('⚠️ 語音生成出錯，可以按「讀出答案」重試。');
-    } finally {
-      ttsBtn.disabled = false;
     }
+  } catch (err) {
+    alert('❌ TTS 錯誤：' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '▶ 🗣️ 李斯啟奏';
   }
+}
 
-  function playAudioBlob(blob) {
-    const url = URL.createObjectURL(blob);
-    audioPlayer.src = url;
-    audioPlayer.style.display = 'block';
-    audioPlayer.play();
-    ttsStatus.textContent = '🔊 播放中…';
-    setStatus('🔊 小幫手正在講…');
-    audioPlayer.onended = () => {
-      ttsStatus.textContent = '✅ 播完了！';
-      setStatus('✅ 完成！可以再上傳另一張圖片。');
-    };
-  }
+function playAudioBlob(blob) {
+  const audioPlayer = document.getElementById('audioPlayer');
+  audioPlayer.src = URL.createObjectURL(blob);
+  audioPlayer.classList.remove('hidden');
+  audioPlayer.play();
+}
 
-  function b64ToBlob(b64, mime) {
-    const bytes = atob(b64);
-    const arr   = new Uint8Array(bytes.length);
-    for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
-    return new Blob([arr], { type: mime });
-  }
-
-  /* ─── Helpers ─── */
-  function setStatus(msg, isError = false) {
-    statusEl.textContent = msg;
-    statusEl.className = isError ? 'error' : '';
-  }
+function b64ToBlob(b64, mime) {
+  const bytes = atob(b64);
+  const arr = new Uint8Array(bytes.length);
+  for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
+  return new Blob([arr], { type: mime });
+}
 </script>
 </body>
 </html>
