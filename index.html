@@ -352,7 +352,8 @@ async function askAI() {
 async function speakResponse() {
   if (!aiResult) return;
 
-  const text = [aiResult.short_desc, aiResult.ancient_comparison, aiResult.closing].filter(Boolean).join('\n');
+  //[aiResult.ancient_comparison, aiResult.closing]
+  const text = [aiResult.short_desc].filter(Boolean).join('\n');
   if (!text.trim()) return;
 
   const btn = document.getElementById('ttsBtn');
