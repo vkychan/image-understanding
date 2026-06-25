@@ -1,0 +1,7 @@
+{
+  "name": "image-understanding",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>秦港通 御覽版</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .animate-fadeIn { animation: fadeIn 0.3s ease-out; }
+    .animate-pulse { animation: pulse 2s infinite; }
+    body { font-family: 'Georgia', serif; min-height: 100vh; background: #f8fafb; }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen bg-slate-50">
+
+<!-- HEADER -->
+<header class="border-b border-emerald-100 bg-white/95 backdrop-blur-md sticky top-0 z-50 px-5 py-4 shadow-sm">
+  <div class="max-w-4xl mx-auto flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-11 h-11 rounded-full flex items-center justify-center shadow-md border border-emerald-300/40 relative" style="background: linear-gradient(135deg,#10b981,#34d399,#a7f3d0)">
+        <span style="font-size:20px">🪙</span>
+        <div class="absolute inset-0.5 rounded-full border border-white/30"></div>
+      </div>
+      <div>
+        <div class="flex items-center gap-1.5">
+          <span class="font-black tracking-widest text-2xl" style="background:linear-gradient(90deg,#059669,#d97706,#047857);-webkit-background-clip:text;-webkit-text-fill-color:transparent">秦港通</span>
+          <span class="text-xs bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full font-bold border border-emerald-200/50">御覽版</span>
+        </div>
+        <p class="text-xs text-slate-500 tracking-widest mt-0.5">👑 陛下御用 · 現代商場物價通辨要術</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="flex-1 max-w-4xl w-full mx-auto p-4 flex flex-col">
+  <div class="flex-1 flex flex-col py-2 animate-fadeIn">
+
+    <!-- TITLE -->
+    <div class="text-center py-5 bg-white rounded-2xl border border-emerald-100 mb-5 flex flex-col items-center relative overflow-hidden shadow-sm">
+      <div class="absolute inset-0" style="background:radial-gradient(circle at center,rgba(16,185,129,0.03) 0%,transparent 75%)"></div>
+      <div class="text-3xl font-extrabold tracking-widest text-slate-800 mb-1 flex items-center gap-2">
+        <span class="opacity-30 text-emerald-700">〔</span>
+        <span class="font-black" style="background:linear-gradient(90deg,#059669,#f59e0b,#047857);-webkit-background-clip:text;-webkit-text-fill-color:transparent">秦港通</span>
+        <span class="opacity-30 text-emerald-700">〕</span>
+      </div>
+      <p class="text-xs text-slate-500 tracking-widest font-bold mt-1">🏛️ 御覽諸夏新物 ⚖️ 銖兩折算呈摺</p>
+    </div>
+
+    <!-- TWO COLUMN -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-5 mb-5 items-stretch">
+
+      <!-- LEFT COLUMN -->
+      <div class="md:col-span-5 flex flex-col gap-4">
+
+        <!-- IMAGE UPLOAD BOX -->
+        <div class="bg-white rounded-2xl border-2 border-emerald-50 p-5 relative overflow-hidden flex-1 flex flex-col shadow-sm">
+          <div class="absolute top-2 left-2 w-3.5 h-3.5 border-t-2 border-l-2 border-emerald-500/80"></div>
+          <div class="absolute top-2 right-2 w-3.5 h-3.5 border-t-2 border-r-2 border-emerald-500/80"></div>
+          <div class="absolute bottom-2 left-2 w-3.5 h-3.5 border-b-2 border-l-2 border-emerald-500/80"></div>
+          <div class="absolute bottom-2 right-2 w-3.5 h-3.5 border-b-2 border-r-2 border-emerald-500/80"></div>
+
+          <div class="text-xs font-bold text-slate-400 mb-2.5 flex items-center justify-between z-10 tracking-wider">
+            <span>📸 影照儀（輕觸畫幅以攝取商品）</span>
+            <span class="text-emerald-500 animate-pulse font-bold">● 連線中</span>
+          </div>
+
+          <div id="imageArea" onclick="document.getElementById('fileInput').click()"
+            class="flex-1 min-h-60 rounded-xl flex flex-col items-center justify-center relative p-3 border-2 border-dashed border-slate-200 transition-all cursor-pointer z-10 overflow-hidden bg-slate-50/50 hover:border-emerald-400 hover:bg-emerald-50/20">
+            <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="handleImageUpload(event)" />
+            <div id="uploadPlaceholder" class="flex flex-col items-center justify-center text-slate-400 text-center p-4">
+              <div class="w-16 h-16 rounded-full bg-white flex items-center justify-center mb-4 border border-slate-100 shadow-sm">
+                <span style="font-size:28px">🖼️</span>
+              </div>
+              <p class="text-sm font-black text-slate-700 mb-1.5 tracking-wider">📸 輕觸攝取新物</p>
+              <p class="text-xs text-slate-500 max-w-48 leading-relaxed">可點擊以調用相機或自相冊選取商品圖片。</p>
+            </div>
+            <img id="uploadedImg" src="" alt="皇帝攝取之物" class="hidden w-full h-full object-contain rounded-lg drop-shadow-md transition-all duration-300" />
+          </div>
+        </div>
+
+        <!-- CONVERSION BOX -->
+        <div class="bg-white rounded-2xl border-2 border-emerald-50 p-5 shadow-sm flex flex-col relative overflow-hidden">
+          <div class="absolute inset-x-0 bottom-0 h-1/2 pointer-events-none" style="background:linear-gradient(to top,rgba(16,185,129,0.04),transparent)"></div>
+
+          <div class="flex items-center justify-between mb-3.5 border-b border-slate-100 pb-2.5">
+            <div class="flex items-center gap-1.5">
+              <span>📈</span>
+              <h4 class="text-xs font-bold tracking-wider text-slate-700">⚖️ 泉貨折算 (港幣 ⇄ 兩)</h4>
+            </div>
+            <span class="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">港幣 ⇄ 銖兩</span>
+          </div>
+
+          <div class="grid grid-cols-1 gap-3.5 mb-1 z-10">
+            <div class="bg-slate-50/80 p-3 rounded-xl border border-slate-100 flex items-center justify-between">
+              <label class="text-xs text-slate-500 font-bold tracking-widest">💵 今之洋錢 (港幣元)</label>
+              <div class="flex items-center gap-1.5">
+                <span class="text-sm font-bold text-emerald-600">$</span>
+                <input type="number" id="hkdInput" value="3" oninput="updateConversion()"
+                  class="w-24 bg-transparent border-none text-slate-800 text-right text-base font-bold focus:outline-none p-0 font-mono tracking-wider" placeholder="0" />
+              </div>
+            </div>
+
+            <div class="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100 flex flex-col gap-2">
+              <label class="text-xs text-emerald-700 font-bold tracking-widest">🪙 折合帝國半兩</label>
+              <div class="flex items-center justify-between text-emerald-800">
+                <span id="banliangResult" class="text-xl font-black tracking-widest">三分之一 兩</span>
+                <div class="w-8 h-8 shrink-0 relative flex items-center justify-center rounded-full border border-amber-300 shadow-md" style="background:linear-gradient(135deg,#f59e0b,#fde047)">
+                  <div class="w-2.5 h-2.5 bg-white border border-amber-400 rounded-sm"></div>
+                  <span class="absolute left-0.5 text-xs font-black text-amber-950" style="font-size:6px">兩</span>
+                  <span class="absolute right-0.5 text-xs font-black text-amber-950" style="font-size:6px">半</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-2 text-xs text-slate-400 text-right">* 銖兩基準： 壹兩 折合 港幣九元</div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="md:col-span-7 bg-white rounded-2xl border-2 border-emerald-50 p-5 shadow-sm flex flex-col relative overflow-hidden">
+        <div class="absolute right-0 bottom-0 opacity-5 text-emerald-600 font-serif pointer-events-none select-none" style="font-size:180px;line-height:1">秦</div>
+
+        <div class="z-10 flex-1 flex flex-col">
+          <div class="flex items-center gap-2 mb-4 border-b border-slate-100 pb-2.5">
+            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500" style="box-shadow:0 0 8px rgba(16,185,129,0.4)"></div>
+            <span class="text-xs font-bold text-slate-700 tracking-widest">📋 辨物摺子</span>
+          </div>
+
+          <div class="space-y-4 flex-1 flex flex-col">
+
+            <!-- Product Name -->
+            <div class="bg-slate-50/80 p-4 rounded-xl border border-slate-100 relative overflow-hidden">
+              <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div>
+              <div class="text-xs font-bold text-emerald-600 tracking-widest mb-1.5 flex items-center gap-1">
+                <span>🏆</span><span>👑 御覽名黷</span>
+              </div>
+              <h4 id="productName" class="text-lg font-bold text-slate-800 tracking-wider">燒烤叉 (炙肉鐵簽)</h4>
+              <p id="productPeriod" class="text-xs text-slate-400 mt-0.5">秦代標準 銖兩折算</p>
+            </div>
+
+            <!-- Description -->
+            <div class="bg-slate-50/80 p-4 rounded-xl border border-slate-100 flex-1 flex flex-col relative">
+              <div class="text-xs font-bold text-emerald-600 tracking-widest mb-2 flex items-center gap-1">
+                <span>📖</span><span>📜 大略案語</span>
+              </div>
+              <p id="productDesc" class="text-slate-700 text-sm leading-relaxed tracking-widest flex-1 whitespace-pre-line"></p>
+              <div class="flex justify-end mt-3">
+                <button onclick="speakDescription()" class="flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all active:scale-95 shadow-md">
+                  <span>▶</span><span class="tracking-widest">🗣️ 李斯啟奏</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Accordion -->
+            <div class="border border-emerald-100 rounded-xl overflow-hidden bg-slate-50/50">
+              <button id="accordionBtn" onclick="toggleAccordion()" class="w-full px-4 py-3 bg-slate-100/80 hover:bg-slate-200/50 flex items-center justify-between text-xs font-bold text-emerald-700 transition-all">
+                <span id="accordionTitle" class="font-serif text-sm tracking-wider">📜 燒烤叉 詳解</span>
+                <span id="accordionArrow">▼</span>
+              </button>
+              <div id="accordionBody" class="hidden p-4 space-y-4 text-slate-700 text-xs leading-relaxed border-t border-emerald-100 bg-white animate-fadeIn">
+                <div class="border-l-2 border-emerald-500 pl-3 py-0.5">
+                  <h5 class="font-bold text-emerald-800 tracking-widest mb-1.5">📜 名稱與用途</h5>
+                  <p id="productUsage" class="leading-relaxed tracking-widest"></p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                  <div class="bg-emerald-50/30 p-3.5 rounded-xl border border-emerald-100">
+                    <div class="text-xs font-bold text-emerald-600 tracking-wider mb-2">✅ 利（長處）</div>
+                    <ul id="prosList" class="space-y-2 list-none pl-0"></ul>
+                  </div>
+                  <div class="bg-rose-50/20 p-3.5 rounded-xl border border-rose-100">
+                    <div class="text-xs font-bold text-rose-600 tracking-wider mb-2">❌ 弊（短處）</div>
+                    <ul id="consList" class="space-y-2 list-none pl-0"></ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Footer row -->
+        <div class="mt-6 pt-3.5 border-t border-slate-100 flex items-center justify-between gap-3 z-10">
+          <div id="productId" class="text-xs text-slate-400 font-mono tracking-widest">🔖 帝國庫藏編號: BBQ-FORK</div>
+          <button id="copyBtn" onclick="copyResult()" class="px-4 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold tracking-widest transition-all flex items-center gap-1.5 active:scale-95 border border-emerald-200 shadow-sm">
+            <span>📤</span><span id="copyLabel">✍️ 謄抄摺子</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- GOODS SELECTOR -->
+    <div class="bg-white rounded-2xl border-2 border-emerald-50 p-4 shadow-sm mb-2">
+      <div class="text-xs font-bold text-slate-700 tracking-widest mb-3.5 flex items-center gap-1.5">
+        <span>🪙</span><span>📋 御前清單：切換查看其餘器物</span>
+      </div>
+      <div class="grid grid-cols-3 gap-3" id="goodsGrid"></div>
+    </div>
+
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="border-t border-slate-100 py-4 bg-white text-center text-xs text-slate-400 z-10 shadow-inner">
+  <div class="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+    <span>大秦帝國主計署 咸陽宮製 ©️ 西元前221 – 二〇二六年.</span>
+    <span class="font-mono tracking-wider">大秦上計系統 · 銖兩折易制</span>
+  </div>
+</footer>
+
+<script>
+const GOODS_DATA = [
+  {
+    id: 'bbq-fork',
+    name: '燒烤叉 (炙肉鐵簽)',
+    priceHkd: 3,
+    period: '秦代標準 銖兩折算',
+    description: '鐵簽也，刺肉炙火之器。值三元，折半兩錢三分之一枚。市價約四元[1]，此價甚廉，宜購之。古之炙簽是也。如欲知其利弊，請示下。',
+    detailTitle: '燒烤叉 詳解',
+    usage: '此物名曰燒烤叉，乃鐵製長簽，尖端分叉，用以刺穿肉食、丸餌、蔬果，架於炭火之上翻轉炙烤，使食物均勻受熱而熟。猶如古時炙簽之用，然今制更為精巧。',
+    pros: [
+      { title: '輕便易攜', text: '叉身細長輕盈，攜行無礙，出行炙肉甚便。' },
+      { title: '價廉可棄', text: '此物價甚低，用畢即棄，無須洗滌保養，省卻繁瑣。' }
+    ],
+    cons: [
+      { title: '質地脆薄', text: '廉價之鐵簽，久炙易彎折變形，不堪重物。' },
+      { title: '一次之用', text: '此乃拋棄之物，非經久耐用之器，不可長期使用。' }
+    ],
+    emoji: '🔱'
+  },
+  {
+    id: 'instant-noodles',
+    name: '方便麵 (速食乾糒)',
+    priceHkd: 9,
+    period: '秦代標準 銖兩折算',
+    description: '乾麵餅也，熱水沖調即食。值九元，折半兩一兩。市價約十二元[1]，此物速食，宜充飢。古之冷淘乾糒是也。如欲知其利弊，請示下。',
+    detailTitle: '方便麵 詳解',
+    usage: '此物名曰方便麵，乃油炸脫水之麵餅，附以椒鹽脂膏。置於器中，以沸水沃之，密蓋須臾即可食。行旅之人、宿營之士，攜之最便，免卻造飯升煙之苦。',
+    pros: [
+      { title: '備荒速食', text: '不需釜甑，傾沸水須臾即成，行軍、勞作備用至佳。' },
+      { title: '調味濃郁', text: '隨附椒鹽脂膏，滋味鮮美，能慰行旅之勞。' }
+    ],
+    cons: [
+      { title: '燥熱多鹽', text: '多食令人引水焦渴，非中正養生之膳，不可常充正餐。' },
+      { title: '難以久儲', text: '油炸之餅，久置易生油哈之味，不可藏之經年。' }
+    ],
+    emoji: '🍜'
+  },
+  {
+    id: 'bottled-water',
+    name: '瓶裝水 (清冽泉缻)',
+    priceHkd: 4.5,
+    period: '秦代標準 銖兩折算',
+    description: '塑料缻貯清泉也。值四元有半，折半兩錢五分。市價五元[1]。其水清洌，攜行甚便。古之行縢瓢飲是也。如欲知其利弊，請示下。',
+    detailTitle: '瓶裝水 詳解',
+    usage: '此物名曰瓶裝水，以番夷番舶異質（塑料）為缻，貯純淨清泉。缻口有螺旋之蓋，緊鎖滴水不漏。行途、臨陣，皆可攜之，隨時解渴，免汲生水之患。',
+    pros: [
+      { title: '極淨防疾', text: '汲自深泉，濾淨無雜，飲之不生疫癘，有利社稷。' },
+      { title: '密閉不漏', text: '缻口有栓，傾側不溢，置於鞍馬無憂，甚於瓢飲。' }
+    ],
+    cons: [
+      { title: '番缻難消', text: '貯水之器非泥非銅，棄於荒野歷百年而不朽，恐遺禍於後世。' },
+      { title: '價倍井泉', text: '井泉無值，而此物索錢，若非行軍遠足，殊為不值。' }
+    ],
+    emoji: '💧'
+  }
+];
+
+let selectedIndex = 0;
+let isAccordionOpen = false;
+
+function toChineseNum(num) {
+  const chars = ['零','一','二','三','四','五','六','七','八','九'];
+  const units = ['','十','百','千','萬'];
+  if (num === 0) return '零';
+  let str = '', n = num, uIdx = 0;
+  while (n > 0) {
+    const d = n % 10;
+    if (d > 0) str = chars[d] + units[uIdx] + str;
+    else if (str.charAt(0) !== '零' && str !== '') str = '零' + str;
+    n = Math.floor(n / 10); uIdx++;
+  }
+  if (str.startsWith('一十')) str = str.substring(1);
+  if (str.endsWith('零')) str = str.slice(0,-1);
+  return str || '零';
+}
+
+function getBanLiangFraction(hkd) {
+  if (isNaN(hkd) || hkd <= 0) return '零 兩';
+  const rawBanLiang = hkd / 9;
+  const rounded = Math.round(rawBanLiang * 10) / 10;
+  if (rounded === 0) return '零 兩';
+  const intPart = Math.floor(rounded);
+  const decPart = Math.round((rounded - intPart) * 10);
+  const intChinese = toChineseNum(intPart);
+  const decChinese = toChineseNum(decPart);
+  let result;
+  if (decPart === 0) result = intChinese;
+  else if (intPart === 0) result = `十分之${decChinese}`;
+  else result = `${intChinese}又十分之${decChinese}`;
+  return result + ' 兩';
+}
+
+function updateConversion() {
+  const hkd = parseFloat(document.getElementById('hkdInput').value);
+  document.getElementById('banliangResult').textContent = getBanLiangFraction(hkd);
+}
+
+function selectGood(index) {
+  selectedIndex = index;
+  isAccordionOpen = false;
+  const good = GOODS_DATA[index];
+
+  document.getElementById('hkdInput').value = good.priceHkd;
+  updateConversion();
+
+  document.getElementById('productName').textContent = good.name;
+  document.getElementById('productPeriod').textContent = good.period;
+  document.getElementById('productDesc').textContent = good.description;
+  document.getElementById('accordionTitle').textContent = '📜 ' + good.detailTitle;
+  document.getElementById('productId').textContent = '🔖 帝國庫藏編號: ' + good.id.toUpperCase();
+  document.getElementById('productUsage').textContent = good.usage;
+
+  const prosList = document.getElementById('prosList');
+  prosList.innerHTML = good.pros.map(p => `<li class="text-xs leading-relaxed"><strong class="text-emerald-800">👍 ${p.title}：</strong><span class="text-slate-600">${p.text}</span></li>`).join('');
+
+  const consList = document.getElementById('consList');
+  consList.innerHTML = good.cons.map(c => `<li class="text-xs leading-relaxed"><strong class="text-rose-800">👎 ${c.title}：</strong><span class="text-slate-600">${c.text}</span></li>`).join('');
+
+  document.getElementById('accordionBody').classList.add('hidden');
+  document.getElementById('accordionArrow').textContent = '▼';
+
+  renderGoodsGrid();
+}
+
+function toggleAccordion() {
+  isAccordionOpen = !isAccordionOpen;
+  const body = document.getElementById('accordionBody');
+  const arrow = document.getElementById('accordionArrow');
+  if (isAccordionOpen) {
+    body.classList.remove('hidden');
+    arrow.textContent = '▲';
+  } else {
+    body.classList.add('hidden');
+    arrow.textContent = '▼';
+  }
+}
+
+function handleImageUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (evt) => {
+    const img = document.getElementById('uploadedImg');
+    img.src = evt.target.result;
+    img.classList.remove('hidden');
+    document.getElementById('uploadPlaceholder').classList.add('hidden');
+  };
+  reader.readAsDataURL(file);
+}
+
+function copyResult() {
+  const good = GOODS_DATA[selectedIndex];
+  const hkd = parseFloat(document.getElementById('hkdInput').value);
+  const text = `【秦港通 辨物摺子】\n物品名稱：${good.name}\n今值港幣：$${hkd.toFixed(2)} 元\n折合帝國半兩：${getBanLiangFraction(hkd)}\n用途沿革：${good.usage}`;
+  navigator.clipboard.writeText(text).then(() => {
+    const label = document.getElementById('copyLabel');
+    label.textContent = '✍️ 臣已錄入!';
+    setTimeout(() => { label.textContent = '✍️ 謄抄摺子'; }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const label = document.getElementById('copyLabel');
+    label.textContent = '✍️ 臣已錄入!';
+    setTimeout(() => { label.textContent = '✍️ 謄抄摺子'; }, 2000);
+  });
+}
+
+function speakDescription() {
+  const good = GOODS_DATA[selectedIndex];
+  if ('speechSynthesis' in window) {
+    const utter = new SpeechSynthesisUtterance(good.description);
+    utter.lang = 'zh-TW';
+    speechSynthesis.speak(utter);
+  }
+}
+
+function renderGoodsGrid() {
+  const grid = document.getElementById('goodsGrid');
+  grid.innerHTML = GOODS_DATA.map((good, i) => {
+    const isCurrent = i === selectedIndex;
+    return `
+      <button onclick="selectGood(${i})" class="p-3.5 rounded-xl border-2 transition-all flex flex-col justify-between text-left relative overflow-hidden ${isCurrent ? 'bg-emerald-50/50 border-emerald-400 shadow-md' : 'bg-slate-50/80 hover:bg-slate-100/80 border-slate-200'}">
+        <span class="text-xs font-bold tracking-wider mb-1">${good.emoji} ${good.name.split(' ')[0]}</span>
+        <span class="text-xs text-slate-600 font-mono font-bold mt-2">🪙 $${good.priceHkd} 元</span>
+        ${isCurrent ? '<div class="absolute right-0 top-0 bottom-0 w-1 bg-emerald-500"></div>' : ''}
+      </button>`;
+  }).join('');
+}
+
+// Init
+selectGood(0);
+</script>
+</body>
+</html>
