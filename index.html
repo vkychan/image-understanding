@@ -186,7 +186,7 @@
         <!-- Footer row -->
         <div class="mt-6 pt-3.5 border-t border-slate-100 flex items-center justify-between gap-3 z-10">
           <div id="archiveId" class="text-xs text-slate-400 font-mono tracking-widest">🔖 帝國庫藏編號: —</div>
-          <button onclick="alert('臣已錄入！')"
+          <button id="archiveBtn" onclick="archiveCopy(this)"
             class="px-4 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold tracking-widest transition-all flex items-center gap-1.5 active:scale-95 border border-emerald-200 shadow-sm">
             📤 謄抄摺子
           </button>
@@ -414,6 +414,15 @@ function b64ToBlob(b64, mime) {
   const arr = new Uint8Array(bytes.length);
   for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
   return new Blob([arr], { type: mime });
+}
+
+function archiveCopy(btn) {
+  btn.textContent = '✅ 臣已錄入！';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.innerHTML = '📤 謄抄摺子';
+    btn.disabled = false;
+  }, 3500);
 }
 </script>
 </body>
