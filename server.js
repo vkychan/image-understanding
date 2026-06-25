@@ -1,7 +1,7 @@
 import http from 'http';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -80,8 +80,7 @@ const server = http.createServer(async (req, res) => {
     };
 
     try {
-      // Bust module cache by appending a timestamp query (ESM workaround)
-      const mod = await import(`${apiPath}?t=${Date.now()}`);
+      const mod = await import(pathToFileURL(apiPath).href);
       await mod.default(mockReq, mockRes);
     } catch (err) {
       console.error('[API error]', err);
