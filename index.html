@@ -153,8 +153,30 @@
                 <span style="font-family:serif" class="text-sm tracking-wider">📜 詳解奏摺</span>
                 <span id="accordionArrow">▼</span>
               </button>
-              <div id="accordionBody" class="hidden p-4 border-t border-emerald-100 bg-white animate-fadeIn">
-                <p id="detailDesc" class="text-slate-700 text-xs leading-loose tracking-widest whitespace-pre-line"></p>
+              <div id="accordionBody" class="hidden p-4 space-y-4 border-t border-emerald-100 bg-white animate-fadeIn">
+                <!-- 健康利弊 -->
+                <div>
+                  <div class="text-xs font-bold text-slate-600 tracking-widest mb-2">⚕️ 藥石之理 — 健康利弊</div>
+                  <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-emerald-50/30 p-3 rounded-xl border border-emerald-100">
+                      <div class="text-xs font-bold text-emerald-600 mb-2">✅ 利（益龍體）</div>
+                      <ul id="healthBenefits" class="space-y-1.5 list-none pl-0"></ul>
+                    </div>
+                    <div class="bg-rose-50/20 p-3 rounded-xl border border-rose-100">
+                      <div class="text-xs font-bold text-rose-600 mb-2">❌ 弊（憂龍體）</div>
+                      <ul id="healthRisks" class="space-y-1.5 list-none pl-0"></ul>
+                    </div>
+                  </div>
+                </div>
+                <!-- 古今類比 -->
+                <div class="border-l-2 border-emerald-500 pl-3 py-0.5">
+                  <div class="text-xs font-bold text-slate-600 tracking-widest mb-1.5">🏛️ 古今類比</div>
+                  <p id="ancientComparison" class="text-xs text-slate-700 leading-relaxed tracking-widest whitespace-pre-line"></p>
+                </div>
+                <!-- 結語 -->
+                <div class="bg-amber-50/30 p-3 rounded-xl border border-amber-100 text-center">
+                  <p id="closingText" class="text-xs text-amber-800 italic tracking-widest leading-relaxed"></p>
+                </div>
               </div>
             </div>
 
@@ -214,7 +236,10 @@ function removeImage() {
 function resetRightColumn() {
   document.getElementById('productName').textContent = '（待陛下攝取新物）';
   document.getElementById('shortDesc').textContent = '';
-  document.getElementById('detailDesc').textContent = '';
+  document.getElementById('healthBenefits').innerHTML = '';
+  document.getElementById('healthRisks').innerHTML = '';
+  document.getElementById('ancientComparison').textContent = '';
+  document.getElementById('closingText').textContent = '';
   document.getElementById('archiveId').textContent = '🔖 帝國庫藏編號: —';
   document.getElementById('priceDisplay').innerHTML =
     '<span class="text-slate-300 text-sm tracking-wider">— 尚未辨物 —</span>';
@@ -299,7 +324,17 @@ async function askAI() {
     document.getElementById('productName').textContent =
       `${data.modern_name}（${data.ancient_name}）`;
     document.getElementById('shortDesc').textContent = data.short_desc || '';
-    document.getElementById('detailDesc').textContent = data.detail_desc || '';
+
+    // 健康利弊
+    document.getElementById('healthBenefits').innerHTML =
+      (data.health_benefits || []).map(b => `<li class="text-xs leading-relaxed text-slate-600">👍 ${b}</li>`).join('');
+    document.getElementById('healthRisks').innerHTML =
+      (data.health_risks || []).map(r => `<li class="text-xs leading-relaxed text-slate-600">⚠️ ${r}</li>`).join('');
+
+    // 古今類比 + 結語
+    document.getElementById('ancientComparison').textContent = data.ancient_comparison || '';
+    document.getElementById('closingText').textContent = data.closing || '';
+
     document.getElementById('archiveId').textContent =
       `🔖 帝國庫藏編號: ${data.archive_id || '—'}`;
 
@@ -317,7 +352,7 @@ async function askAI() {
 async function speakResponse() {
   if (!aiResult) return;
 
-  const text = [aiResult.short_desc, aiResult.detail_desc].filter(Boolean).join('\n');
+  const text = [aiResult.short_desc, aiResult.ancient_comparison, aiResult.closing].filter(Boolean).join('\n');
   if (!text.trim()) return;
 
   const btn = document.getElementById('ttsBtn');
