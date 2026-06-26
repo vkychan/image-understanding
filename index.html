@@ -23,7 +23,7 @@
     </div>
     <div>
       <h1 class="font-black tracking-widest text-base text-slate-800 leading-tight">余振強紀念第二中學</h1>
-      <p class="text-xs text-slate-500 tracking-widest mt-0.5">秦港通 👑 陛下御用 · 現代商場物價通辨要術</p>
+      <p class="text-xs text-slate-500 tracking-widest mt-0.5">秦港通 | 御前現代物價奏報器</p>
     </div>
   </div>
 </header>
@@ -35,7 +35,7 @@
     <!-- TITLE IMAGE -->
     <div class="text-center py-4 bg-white rounded-2xl border border-emerald-100 mb-5 flex flex-col items-center justify-center gap-2 shadow-sm">
       <img src="images/qin-gang-dong.png" alt="秦港通" style="height:60px; object-fit:contain;" />
-      <p class="text-xs text-slate-500 tracking-widest font-bold">🏛️ 御覽諸夏新物 ⚖️ 銖兩折算呈摺</p>
+      <p class="text-xs text-slate-500 tracking-widest font-bold"> 辦今物，折半兩，察利弊，呈聖聽</p>
     </div>
 
     <!-- TWO COLUMN -->
@@ -52,8 +52,8 @@
           <div class="absolute bottom-2 right-2 w-3.5 h-3.5 border-b-2 border-r-2 border-emerald-500/80 pointer-events-none"></div>
 
           <div class="text-xs font-bold text-slate-400 mb-2 flex items-center justify-between tracking-wider">
-            <span>📸 影照儀（輕觸畫幅以攝取商品）</span>
-            <span class="text-emerald-500 pulse font-bold">● 連線中</span>
+            <span>御前攝物鏡</span>
+            <span class="text-emerald-500 pulse font-bold">● 候命中</span>
           </div>
 
           <!-- Fixed 3:4 ratio wrapper -->
@@ -86,19 +86,19 @@
         <!-- ASK AI BUTTON -->
         <button id="askBtn" onclick="askAI()"
           class="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black tracking-widest transition-all active:scale-95 shadow-md text-sm disabled:opacity-50 disabled:cursor-not-allowed">
-          問問李丞相！
+          命李斯辦物！
         </button>
 
         <!-- PRICE DISPLAY -->
         <div class="bg-white rounded-2xl border-2 border-emerald-50 p-4 shadow-sm">
           <div class="flex items-center gap-1.5 mb-3 border-b border-slate-100 pb-2.5">
             <span>🪙</span>
-            <span class="text-xs font-bold tracking-wider text-slate-700">折合帝國半兩</span>
+            <span class="text-xs font-bold tracking-wider text-slate-700">泉貨折算</span>
           </div>
           <div id="priceDisplay" class="flex items-center gap-1 flex-wrap" style="min-height:44px;">
             <span class="text-slate-300 text-sm tracking-wider">— 尚未辨物 —</span>
           </div>
-          <div class="mt-2 text-xs text-slate-400 text-right">* 壹兩 折合 港幣九元</div>
+          
         </div>
 
       </div>
@@ -124,7 +124,7 @@
             <div class="bg-slate-50/80 p-4 rounded-xl border border-slate-100 relative overflow-hidden">
               <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500 rounded-l-xl"></div>
               <div class="text-xs font-bold text-emerald-600 tracking-widest mb-1.5 flex items-center gap-1">
-                <span>🏆</span><span>👑 御覽名黷</span>
+                <span>🏆</span><span>奏報物名</span>
               </div>
               <p id="productName" class="text-sm font-bold text-slate-800 tracking-wider leading-relaxed">
                 （待陛下攝取新物）
@@ -134,7 +134,7 @@
             <!-- 大略案語 -->
             <div class="bg-slate-50/80 p-4 rounded-xl border border-slate-100 flex-1 flex flex-col">
               <div class="text-xs font-bold text-emerald-600 tracking-widest mb-2 flex items-center gap-1">
-                <span>📖</span><span>📜 大略案語</span>
+                <span>📖</span><span>李斯上書</span>
               </div>
               <p id="shortDesc" class="text-slate-700 text-sm leading-relaxed tracking-widest flex-1 whitespace-pre-line"></p>
               <div class="flex justify-end mt-3">
@@ -150,13 +150,13 @@
             <div class="border border-emerald-100 rounded-xl overflow-hidden bg-slate-50/50">
               <button onclick="toggleAccordion()"
                 class="w-full px-4 py-3 bg-slate-100/80 hover:bg-slate-200/50 flex items-center justify-between text-xs font-bold text-emerald-700 transition-all">
-                <span style="font-family:serif" class="text-sm tracking-wider">📜 詳解奏摺</span>
+                <span style="font-family:serif" class="text-sm tracking-wider">命李斯詳奏</span>
                 <span id="accordionArrow">▼</span>
               </button>
               <div id="accordionBody" class="hidden p-4 space-y-4 border-t border-emerald-100 bg-white animate-fadeIn">
                 <!-- 健康利弊 -->
                 <div>
-                  <div class="text-xs font-bold text-slate-600 tracking-widest mb-2">⚕️ 藥石之理 — 健康利弊</div>
+                  <div class="text-xs font-bold text-slate-600 tracking-widest mb-2">李斯奉詔詳陳其利弊</div>
                   <div class="grid grid-cols-2 gap-3">
                     <div class="bg-emerald-50/30 p-3 rounded-xl border border-emerald-100">
                       <div class="text-xs font-bold text-emerald-600 mb-2">✅ 利（益龍體）</div>
@@ -185,10 +185,10 @@
 
         <!-- Footer row -->
         <div class="mt-6 pt-3.5 border-t border-slate-100 flex items-center justify-between gap-3 z-10">
-          <div id="archiveId" class="text-xs text-slate-400 font-mono tracking-widest">🔖 帝國庫藏編號: —</div>
+          
           <button id="archiveBtn" onclick="archiveCopy(this)"
             class="px-4 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold tracking-widest transition-all flex items-center gap-1.5 active:scale-95 border border-emerald-200 shadow-sm">
-            📤 謄抄摺子
+            📤 抄錄奏疏
           </button>
         </div>
 
@@ -240,7 +240,6 @@ function resetRightColumn() {
   document.getElementById('healthRisks').innerHTML = '';
   document.getElementById('ancientComparison').textContent = '';
   document.getElementById('closingText').textContent = '';
-  document.getElementById('archiveId').textContent = '🔖 帝國庫藏編號: —';
   document.getElementById('priceDisplay').innerHTML =
     '<span class="text-slate-300 text-sm tracking-wider">— 尚未辨物 —</span>';
   document.getElementById('audioPlayer').classList.add('hidden');
@@ -335,8 +334,6 @@ async function askAI() {
     document.getElementById('ancientComparison').textContent = data.ancient_comparison || '';
     document.getElementById('closingText').textContent = data.closing || '';
 
-    document.getElementById('archiveId').textContent =
-      `🔖 帝國庫藏編號: ${data.archive_id || '—'}`;
 
     const price = Math.max(0, parseInt(data.price_halfliang) || 0);
     document.getElementById('priceDisplay').innerHTML = renderPriceImages(price);
